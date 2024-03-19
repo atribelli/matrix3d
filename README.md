@@ -1,7 +1,7 @@
 # matrix3d  
 Intel AVX2 and ARM NEON matrix and vector code.
 
-This is the ```main``` branch of the repository.
+This is the ```vecarr``` branch of the repository.
 
 This is a testbed for experimenting with SIMD implementations. For comparison purposes there are also classic looped and unrolled C++ implementations. *C++ template specialization* is used to build different executables for looped, unrolled, SIMD intrinsics, and SIMD assembly language implementations. Note that intrinsic implementations generally have an advantage over assembly since assembly code is in a function rather than inlined. If you do not need to have your code work across various platforms and compilers you might try *C++ inline assembly*.
 

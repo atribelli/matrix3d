@@ -116,13 +116,13 @@ inline specialized mat_x_mat(mat<T, 4, 4> &dest,
 // Matrix and vector array multiplication
 
 template <typename T>
-inline specialized vecarr_x_mat(vec <T, 4>    *dest,
-                                vec <T, 4>    *v,
-                                mat <T, 4, 4> &m,
-                                size_t        n) {
+inline specialized vecarr_x_mat(vecarr <T, 4>    &dest,
+                                vecarr <T, 4>    &v,
+                                mat    <T, 4, 4> &m,
+                                size_t           n) {
 
-    T *pd = dest->v;
-    T *pv = v->v;
+    T *pd = dest.array()->v;
+    T *pv = v.array()->v;
     T *pm = m.m[0];
 
     T m00 = (*(pm +  0)),
@@ -301,16 +301,16 @@ inline specialized mat_x_mat(mat<double, 4, 4> &dest,
 // Matrix and vector array multiplication
 
 template <>
-inline specialized vecarr_x_mat(vec <float, 4>    *dest,
-                                vec <float, 4>    *v,
-                                mat <float, 4, 4> &m,
-                                size_t            n) {
+inline specialized vecarr_x_mat(vecarr <float, 4>    &dest,
+                                vecarr <float, 4>    &v,
+                                mat    <float, 4, 4> &m,
+                                size_t               n) {
 // User defined compiler macro that allows two vector, 8 lane, implementations
 #ifdef INTRIN256
     
     __m256 row0, row1, row2, row3, vec0, vec1, vec2, vec3, vecd;
-    float *pd = dest->v;
-    float *pv = v->v;
+    float *pd = dest.array()->v;
+    float *pv = v.array()->v;
     float *pm = m.m[0];
 
     row0 = _mm256_loadu2_m128(pm +  0, pm +  0);        // Load the matrix twice,
@@ -351,8 +351,8 @@ inline specialized vecarr_x_mat(vec <float, 4>    *dest,
 #else
     
     __m128 row0, row1, row2, row3, vec0, vec1, vec2, vec3, vecd;
-    float *pd = dest->v;
-    float *pv = v->v;
+    float *pd = dest.array()->v;
+    float *pv = v.array()->v;
     float *pm = m.m[0];
 
     row0 = _mm_load_ps(pm +  0);                        // Load all the matrix rows
@@ -379,13 +379,13 @@ inline specialized vecarr_x_mat(vec <float, 4>    *dest,
 }
 
 template <>
-inline specialized vecarr_x_mat(vec <double, 4>    *dest,
-                                vec <double, 4>    *v,
-                                mat <double, 4, 4> &m,
-                                size_t             n) {
+inline specialized vecarr_x_mat(vecarr <double, 4>    &dest,
+                                vecarr <double, 4>    &v,
+                                mat    <double, 4, 4> &m,
+                                size_t                n) {
     __m256d row0, row1, row2, row3, vec0, vec1, vec2, vec3, vecd;
-    double *pd = dest->v;
-    double *pv = v->v;
+    double *pd = dest.array()->v;
+    double *pv = v.array()->v;
     double *pm = m.m[0];
 
     row0 = _mm256_load_pd(pm +  0);                     // Load all the matrix rows
@@ -490,13 +490,13 @@ inline specialized mat_x_mat(mat<float, 4, 4> &dest,
 // Matrix and vector array multiplication
 
 template <>
-inline specialized vecarr_x_mat(vec <float, 4>    *dest,
-                                vec <float, 4>    *v,
-                                mat <float, 4, 4> &m,
-                                size_t            n) {
+inline specialized vecarr_x_mat(vecarr <float, 4>    &dest,
+                                vecarr <float, 4>    &v,
+                                mat    <float, 4, 4> &m,
+                                size_t               n) {
     float32x4_t   row0, row1, row2, row3, vec0, vec1, vec2, vec3, vecs;
-    float *pd = dest->v;
-    float *pv = v->v;
+    float *pd = dest.array()->v;
+    float *pv = v.array()->v;
     float *pm = m.m[0];
 
     row0 = vld1q_f32(pm +  0);              // Load all the matrix rows
@@ -550,23 +550,23 @@ inline specialized mat_x_mat(mat<double, 4, 4> &dest,
 }
 
 template <>
-inline specialized vecarr_x_mat(vec <float, 4>    *dest,
-                                vec <float, 4>    *v,
-                                mat <float, 4, 4> &m,
-                                size_t            n) {
+inline specialized vecarr_x_mat(vecarr <float, 4>    &dest,
+                                vecarr <float, 4>    &v,
+                                mat    <float, 4, 4> &m,
+                                size_t               n) {
 #ifdef ASM256
-    return vecarr_x_mat_f2 (dest->v, v->v, m.m[0], n);
+    return vecarr_x_mat_f2 (dest.array()->v, v.array()->v, m.m[0], n);
 #else
-    return vecarr_x_mat_f  (dest->v, v->v, m.m[0], n);
+    return vecarr_x_mat_f  (dest.array()->v, v.array()->v, m.m[0], n);
 #endif
 }
 
 template <>
-inline specialized vecarr_x_mat(vec <double, 4>    *dest,
-                                vec <double, 4>    *v,
-                                mat <double, 4, 4> &m,
-                                size_t             n) {
-    return vecarr_x_mat_d(dest->v, v->v, m.m[0], n);
+inline specialized vecarr_x_mat(vecarr <double, 4>    &dest,
+                                vecarr <double, 4>    &v,
+                                mat    <double, 4, 4> &m,
+                                size_t                n) {
+    return vecarr_x_mat_d(dest.array()->v, v.array()->v, m.m[0], n);
 }
 
 #elif defined(__aarch64__) || defined(__arm__)  // 64- or 32-bit ARM
@@ -579,14 +579,14 @@ inline specialized mat_x_mat(mat<float, 4, 4> &dest,
 }
 
 template <>
-inline specialized vecarr_x_mat(vec <float, 4>    *dest,
-                                vec <float, 4>    *v,
-                                mat <float, 4, 4> &m,
-                                size_t            n) {
+inline specialized vecarr_x_mat(vecarr <float, 4>    &dest,
+                                vecarr <float, 4>    &v,
+                                mat    <float, 4, 4> &m,
+                                size_t               n) {
 #ifdef ASM256
-    return vecarr_x_mat_f2 (dest->v, v->v, m.m[0], n);
+    return vecarr_x_mat_f2 (dest.array()->v, v.array()->v, m.m[0], n);
 #else
-    return vecarr_x_mat_f  (dest->v, v->v, m.m[0], n);
+    return vecarr_x_mat_f  (dest.array()->v, v.array()->v, m.m[0], n);
 #endif
 }
 

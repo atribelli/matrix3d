@@ -6,6 +6,12 @@
 #include <cstddef>
 #include <cstring>
 
+#if defined(__x86_64__) || defined(_M_X64)      // 64-bit Intel
+#include <immintrin.h>
+#else
+#include <stdlib.h>
+#endif
+
 namespace matrix3d {
 
 
@@ -92,6 +98,83 @@ template <typename T, size_t MAJ, size_t MIN> struct mat {
 // to get compiler to enforce pre and post multiplication
 template <typename T, size_t MAJ, size_t MIN> struct rmat : mat<T, MAJ, MIN>{};
 template <typename T, size_t MAJ, size_t MIN> struct cmat : mat<T, MAJ, MIN>{};
+
+
+
+// -----------------------------------------------------------------------------
+// Vector array class
+
+template <typename T, size_t N> class vecarr {
+private:
+    vec<T, N> *allocated = nullptr;     // Make sure its safe to call free()
+    size_t    elements   = 0;
+
+public:
+    vecarr()           { vecarr::free();      }
+    vecarr(size_t num) { vecarr::alloc(num);  }
+    ~vecarr()          { vecarr::free();      }
+
+    // Deallocate memory allocated with vecarray::alloc()
+    inline void free() {
+        if (allocated != nullptr) {
+#if defined(__x86_64__) || defined(_M_X64)      // 64-bit Intel
+            _mm_free(allocated);
+#else
+            std::free(allocated);
+            // Note, Windows std::free does not work on aligned allocations.
+            // Use _aligned_malloc and _aligned_free if not using
+            // the intrinsics _mm_malloc and _mm_free.
+#endif
+        }
+        
+        // Make sure the internal state is reset
+        allocated = nullptr;
+        elements  = 0;
+    }
+    
+    // Allocated aligned memory
+    inline void alloc(size_t num) {
+        // Round up to an even number of array elements
+        // so we can process vectors in pairs
+        size_t rounded = (num + 1) & ~1;
+
+        // Deallocate anything currently allocated
+        vecarr::free();
+        
+        // Allocate and keep number of elements in sync
+#if defined(__x86_64__) || defined(_M_X64)      // 64-bit Intel
+        allocated = (vec<T, N> *) _mm_malloc(rounded * sizeof(vec<T, N>),
+                                             alignment);
+#else
+        allocated = (vec<T, N> *) std::aligned_alloc(alignment,
+                                                     rounded * sizeof(vec<T, N>));
+#endif
+        if (allocated != nullptr) {
+            elements = num;
+            
+            // Zero out the extra vector used for rounding
+            if (rounded > num) {
+                std::memset(&allocated[num], 0, sizeof(allocated[num]));
+            }
+        }
+    }
+    
+    // The number of array elements
+    inline size_t count() { return elements; }
+    
+    // Allocated array
+    inline vec<T, N> *array() { return allocated; }
+
+    // Verify that index is in range
+    inline bool validate(size_t i) {
+        return elements != 0 && i < elements;
+    }
+};
+
+// Aliases for row and column major versions of a vector array,
+// to get compiler to enforce pre and post multiplication
+template <typename T, size_t N> struct rvecarr : vecarr<T, N>{};
+template <typename T, size_t N> struct cvecarr : vecarr<T, N>{};
 
 
 
@@ -277,18 +360,21 @@ inline specialized cmat_x_cvec(cvec <T, MAJ>      &tdest,
 // Matrix and vector array multiplication
 
 template <typename T, size_t MAJ, size_t MIN>
-inline specialized vecarr_x_mat(vec <T, MAJ>      *dest,
-                                vec <T, MAJ>      *v,
-                                mat <T, MAJ, MIN> &m,
-                                size_t            n) {
+inline specialized vecarr_x_mat(vecarr <T, MAJ>      &dest,
+                                vecarr <T, MAJ>      &v,
+                                mat    <T, MAJ, MIN> &m,
+                                size_t               n) {
+    T *pd = dest.array()->v,
+      *pv = v.array()->v;
+    
     for (int e = 0; e < n; ++e) {
         for (int j = 0; j < MIN; ++j) {
             auto sum = T(0);
             
             for (int i = 0; i < MAJ; ++i) {
-                sum += v[e].v[i] * m.m[i][j];
+                sum += pv[e * MIN + i] * m.m[i][j];
             }
-            dest[e].v[j] = sum;
+            pd[e * MIN + j] = sum;
         }
     }
     
@@ -296,18 +382,18 @@ inline specialized vecarr_x_mat(vec <T, MAJ>      *dest,
 }
 
 template <typename T, size_t MAJ, size_t MIN>
-inline specialized rvecarr_x_rmat(rvec <T, MAJ>      *dest,
-                                  rvec <T, MAJ>      *v,
-                                  rmat <T, MAJ, MIN> &m,
-                                  size_t             n) {
+inline specialized rvecarr_x_rmat(rvecarr <T, MAJ>      &dest,
+                                  rvecarr <T, MAJ>      &v,
+                                  rmat    <T, MAJ, MIN> &m,
+                                  size_t                n) {
     return vecarr_x_mat(dest, v, m, n);
 }
 
 template <typename T, size_t MAJ, size_t MIN>
-inline specialized cmat_x_cvecarr(cvec <T, MIN>      *dest,
-                                  cmat <T, MAJ, MIN> &m,
-                                  cvec <T, MIN>      *v,
-                                  size_t             n) {
+inline specialized cmat_x_cvecarr(cvecarr <T, MIN>      &dest,
+                                  cmat    <T, MAJ, MIN> &m,
+                                  cvecarr <T, MIN>      &v,
+                                  size_t                n) {
     return vecarr_x_mat(dest, v, m, n);
 }
 

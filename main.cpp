@@ -75,20 +75,21 @@ char passed[] = "\x1b[32mpassed\x1b[0m";
 char failed[] = "\x1b[31mfailed\x1b[0m";
 
 template <typename T, size_t N>
-void compare_vec(vec<T, N>  *dvecarr,
-                 T          evec0[N],
-                 T          evec1[N],
-                 int        elements,
-                 const char *msg) {
+void compare_vec(vecarr<T, N> &dvecarr,
+                 T            evec0[N],
+                 T            evec1[N],
+                 int          elements,
+                 const char   *msg) {
+    T    *pv   = dvecarr.array()->v;
     auto valid = true;
     
-    for (int i = 0; i < elements; ++i) {
-        for (int j = 0; j < N; ++j) {
+    for (int e = 0; e < elements; ++e) {
+        for (int i = 0; i < N; ++i) {
             // Even and odd numbered vectors have different expected values
             // since we may process two vectors at a time in SIMD code
-            auto expected = (i & 1) ? evec1[j] : evec0[j];
+            auto expected = (e & 1) ? evec1[i] : evec0[i];
             
-            valid = valid && (dvecarr[i].v[j] == expected);
+            valid = valid && (pv[e * N + i] == expected);
             
 // User defined compiler macro that allows mismatches to be displayed
 #ifdef DUMP
@@ -172,74 +173,43 @@ int main(void) {
     cmat<double, 4, 4> scmatad;
     cmat<double, 4, 4> scmatbd;
 
-    rvec<float,  4>    *drvecarrf;      // drvec[] = srvec[] * srmat
-    rvec<float,  4>    *srvecarrf;      // Pre multiplication of a vector
-    rvec<double, 4>    *drvecarrd;
-    rvec<double, 4>    *srvecarrd;
+    rvecarr<float,  4> drvecarrf;      // drvec[] = srvec[] * srmat
+    rvecarr<float,  4> srvecarrf;      // Pre multiplication of a vector
+    rvecarr<double, 4> drvecarrd;
+    rvecarr<double, 4> srvecarrd;
 
-    cvec<float,  4>    *dcvecarrf;      // dcvec[] = scmat * scvec[]
-    cvec<float,  4>    *scvecarrf;      // Post multiplication of a vector
-    cvec<double, 4>    *dcvecarrd;
-    cvec<double, 4>    *scvecarrd;
+    cvecarr<float,  4> dcvecarrf;      // dcvec[] = scmat * scvec[]
+    cvecarr<float,  4> scvecarrf;      // Post multiplication of a vector
+    cvecarr<double, 4> dcvecarrd;
+    cvecarr<double, 4> scvecarrd;
 
     vec<float,  4>     svec0f;          // Used for initialization of svec[]
     vec<float,  4>     svec1f;
     vec<double, 4>     svec0d;
     vec<double, 4>     svec1d;
 
-    // Round up to an even number of array elements
-    // so we can process float vectors in pairs
-    int elements = 300;
-    int rounded  = (elements + 1) & ~1;
-    
     // Allocate aligned vector arrays
-#if defined(__x86_64__) || defined(_M_X64)      // 64-bit Intel
-    drvecarrf = (rvec<float,  4> *) _mm_malloc(rounded  * sizeof(rvec<float,  4>),
-                                               alignment);
-    srvecarrf = (rvec<float,  4> *) _mm_malloc(rounded  * sizeof(rvec<float,  4>),
-                                               alignment);
-    drvecarrd = (rvec<double, 4> *) _mm_malloc(elements * sizeof(rvec<double, 4>),
-                                               alignment);
-    srvecarrd = (rvec<double, 4> *) _mm_malloc(elements * sizeof(rvec<double, 4>),
-                                               alignment);
+    int elements = 300;
     
-    dcvecarrf = (cvec<float,  4> *) _mm_malloc(rounded  * sizeof(cvec<float,  4>),
-                                               alignment);
-    scvecarrf = (cvec<float,  4> *) _mm_malloc(rounded  * sizeof(cvec<float,  4>),
-                                               alignment);
-    dcvecarrd = (cvec<double, 4> *) _mm_malloc(elements * sizeof(cvec<double, 4>),
-                                               alignment);
-    scvecarrd = (cvec<double, 4> *) _mm_malloc(elements * sizeof(cvec<double, 4>),
-                                               alignment);
-#else
-    drvecarrf = (rvec<float,  4> *)std::aligned_alloc(alignment,
-                                                      rounded  * sizeof(rvec<float,  4>));
-    srvecarrf = (rvec<float,  4> *)std::aligned_alloc(alignment,
-                                                      rounded  * sizeof(rvec<float,  4>));
-    drvecarrd = (rvec<double, 4> *)std::aligned_alloc(alignment,
-                                                      elements * sizeof(rvec<double, 4>));
-    srvecarrd = (rvec<double, 4> *)std::aligned_alloc(alignment,
-                                                      elements * sizeof(rvec<double, 4>));
+    drvecarrf.alloc(elements);
+    srvecarrf.alloc(elements);
+    drvecarrd.alloc(elements);
+    srvecarrd.alloc(elements);
     
-    dcvecarrf = (cvec<float,  4> *)std::aligned_alloc(alignment,
-                                                      rounded  * sizeof(cvec<float,  4>));
-    scvecarrf = (cvec<float,  4> *)std::aligned_alloc(alignment,
-                                                      rounded  * sizeof(cvec<float,  4>));
-    dcvecarrd = (cvec<double, 4> *)std::aligned_alloc(alignment,
-                                                      elements * sizeof(cvec<double, 4>));
-    scvecarrd = (cvec<double, 4> *)std::aligned_alloc(alignment,
-                                                      elements * sizeof(cvec<double, 4>));
-#endif
+    dcvecarrf.alloc(elements);
+    scvecarrf.alloc(elements);
+    dcvecarrd.alloc(elements);
+    scvecarrd.alloc(elements);
 
     // Make sure allocations were successful
-    if (   drvecarrf == nullptr
-        || srvecarrf == nullptr
-        || drvecarrd == nullptr
-        || srvecarrd == nullptr
-        || dcvecarrf == nullptr
-        || scvecarrf == nullptr
-        || dcvecarrd == nullptr
-        || scvecarrd == nullptr) {
+    if (   drvecarrf.array() == nullptr
+        || srvecarrf.array() == nullptr
+        || drvecarrd.array() == nullptr
+        || srvecarrd.array() == nullptr
+        || dcvecarrf.array() == nullptr
+        || scvecarrf.array() == nullptr
+        || dcvecarrd.array() == nullptr
+        || scvecarrd.array() == nullptr) {
         cout << "Failed to allocate memory for vector arrays" << endl;
         exit(1);
     }
@@ -251,10 +221,10 @@ int main(void) {
     memset(&dcmatf,   0, sizeof(cmat<float,  4, 4>));
     memset(&dcmatd,   0, sizeof(cmat<double, 4, 4>));
     
-    memset(drvecarrf, 0, rounded  * sizeof(rvec<float,  4>));
-    memset(drvecarrd, 0, elements * sizeof(rvec<double, 4>));
-    memset(dcvecarrf, 0, rounded  * sizeof(cvec<float,  4>));
-    memset(dcvecarrd, 0, elements * sizeof(cvec<double, 4>));
+    memset(drvecarrf.array(), 0, drvecarrf.count() * sizeof(rvec<float,  4>));
+    memset(drvecarrd.array(), 0, drvecarrd.count() * sizeof(rvec<double, 4>));
+    memset(dcvecarrf.array(), 0, dcvecarrf.count() * sizeof(cvec<float,  4>));
+    memset(dcvecarrd.array(), 0, dcvecarrd.count() * sizeof(cvec<double, 4>));
 
     
     
@@ -506,17 +476,17 @@ int main(void) {
         
         // Odd numbered index into array
         if (i & 1) {
-            srvecarrf[i] = *((rvec<float,  4> *) (&svec1f));
-            srvecarrd[i] = *((rvec<double, 4> *) (&svec1d));
-            scvecarrf[i] = *((cvec<float,  4> *) (&svec1f));    // Same memory
-            scvecarrd[i] = *((cvec<double, 4> *) (&svec1d));    //   layout
+            srvecarrf.array()[i] = *((rvec<float,  4> *) (&svec1f));
+            srvecarrd.array()[i] = *((rvec<double, 4> *) (&svec1d));
+            scvecarrf.array()[i] = *((cvec<float,  4> *) (&svec1f));    // Same memory
+            scvecarrd.array()[i] = *((cvec<double, 4> *) (&svec1d));    //   layout
         }
         // Even numbered index into array
         else {
-            srvecarrf[i] = *((rvec<float,  4> *) (&svec0f));
-            srvecarrd[i] = *((rvec<double, 4> *) (&svec0d));
-            scvecarrf[i] = *((cvec<float,  4> *) (&svec0f));
-            scvecarrd[i] = *((cvec<double, 4> *) (&svec0d));
+            srvecarrf.array()[i] = *((rvec<float,  4> *) (&svec0f));
+            srvecarrd.array()[i] = *((rvec<double, 4> *) (&svec0d));
+            scvecarrf.array()[i] = *((cvec<float,  4> *) (&svec0f));
+            scvecarrd.array()[i] = *((cvec<double, 4> *) (&svec0d));
         }
     }
 
@@ -757,24 +727,13 @@ int main(void) {
     // -------------------------------------------------------------------------
     // Free the vector arrays
     
-#if defined(__x86_64__) || defined(_M_X64)      // 64-bit Intel
-    _mm_free(drvecarrf);
-    _mm_free(srvecarrf);
-    _mm_free(drvecarrd);
-    _mm_free(srvecarrd);
-    _mm_free(dcvecarrf);
-    _mm_free(scvecarrf);
-    _mm_free(dcvecarrd);
-    _mm_free(scvecarrd);
-#else
-    std::free(drvecarrf);
-    std::free(srvecarrf);
-    std::free(drvecarrd);
-    std::free(srvecarrd);
-    std::free(dcvecarrf);
-    std::free(scvecarrf);
-    std::free(dcvecarrd);
-    std::free(scvecarrd);
-#endif
+    drvecarrf.free();
+    srvecarrf.free();
+    drvecarrd.free();
+    srvecarrd.free();
+    dcvecarrf.free();
+    scvecarrf.free();
+    dcvecarrd.free();
+    scvecarrd.free();
 
 }
