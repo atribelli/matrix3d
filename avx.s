@@ -15,7 +15,7 @@
 specialized     =           5                       # Must match C enumeration
 
                 .text
-                .align      2
+                .balign     4
                 .global      mat_x_mat_f,  mat_x_mat_d
                 .global     _mat_x_mat_f, _mat_x_mat_d
                 .global      vecarr_x_mat_f,  vecarr_x_mat_f2,  vecarr_x_mat_d
@@ -35,7 +35,7 @@ specialized     =           5                       # Must match C enumeration
 # Return:
 #     RAX  Specialization identifying AVX2 code
 
-                .align      4
+                .balign     16
 mat_x_mat_f:
 _mat_x_mat_f:
                 movaps      xmm0,   [rdx]           # Load all the matrix rows
@@ -104,7 +104,7 @@ _mat_x_mat_f:
 # Return:
 #     RAX  Specialization identifying AVX2 code
 
-                .align      4
+                .balign     16
 mat_x_mat_d:
 _mat_x_mat_d:
                 vmovapd     ymm0,   [rdx]           # Load all the matrix rows
@@ -177,7 +177,7 @@ _mat_x_mat_d:
 # Return:
 #     RAX  Specialization identifying AVX2 code
 
-                .align      4
+                .balign     16
 vecarr_x_mat_f:
 _vecarr_x_mat_f:
                 # Single vector, 4 lane, implementation
@@ -212,7 +212,7 @@ _vecarr_x_mat_f:
 
 
 
-                .align      4
+                .balign     16
 vecarr_x_mat_f2:
 _vecarr_x_mat_f2:
                 # Two vector, 8 lane, implementation
@@ -268,7 +268,7 @@ _vecarr_x_mat_f2:
 # Return:
 #     RAX  Specialization identifying AVX2 code
 
-                .align      4
+                .balign     16
 vecarr_x_mat_d:
 _vecarr_x_mat_d:
                 vmovapd     ymm0,   [rdx]           # Load all the matrix rows

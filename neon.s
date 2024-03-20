@@ -9,7 +9,7 @@
 specialized     =           8                       // Must match C enumeration
 
                 .text
-                .align      2
+                .balign     4
                 .global      mat_x_mat_f,  mat_x_mat_d
                 .global     _mat_x_mat_f, _mat_x_mat_d
                 .global      vecarr_x_mat_f,  vecarr_x_mat_f2,  vecarr_x_mat_d
@@ -29,7 +29,7 @@ specialized     =           8                       // Must match C enumeration
 // Return:
 //     X0  Specialization identifying AVX2 code
 
-                .align      4
+                .balign     16
 mat_x_mat_f:
 _mat_x_mat_f:
                 ld1         { v0.4s - v3.4s }, [x2] // Load all the matrix rows
@@ -95,7 +95,7 @@ _mat_x_mat_f:
 // Return:
 //     X0  Specialization identifying AVX2 code
 
-                .align      4
+                .balign     16
 mat_x_mat_d:
 _mat_x_mat_d:
                 mov         x0,     specialized
@@ -116,7 +116,7 @@ _mat_x_mat_d:
 // Return:
 //     X0  Specialization identifying AVX2 code
 
-                .align      4
+                .balign     16
 vecarr_x_mat_f:
 vecarr_x_mat_f2:
 _vecarr_x_mat_f:
@@ -155,7 +155,7 @@ _vecarr_x_mat_f2:
 // Return:
 //     X0  Specialization identifying AVX2 code
 
-                .align      4
+                .balign     16
 vecarr_x_mat_d:
 _vecarr_x_mat_d:
                 mov         x0,     specialized

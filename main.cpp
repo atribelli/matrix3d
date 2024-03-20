@@ -245,7 +245,7 @@ int main(void) {
     }
 
     // Zero out the destination matrices and vectors.
-    // Note this includes an extra vector allocarted to round up.
+    // Note this includes an extra vector allocated to round up.
     memset(&drmatf,   0, sizeof(rmat<float,  4, 4>));
     memset(&drmatd,   0, sizeof(rmat<double, 4, 4>));
     memset(&dcmatf,   0, sizeof(cmat<float,  4, 4>));
