@@ -33,6 +33,7 @@ nmake /f matrix3d.mak clean - Removes executable and build files under Windows.
 
 ## Testing  
 Intel based Mac.  
+ARM based Mac.  
 Windows PC.  
 Linux PC.  
 Raspberry Pi 64-bit.  

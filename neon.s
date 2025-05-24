@@ -41,10 +41,10 @@ _mat_x_mat_f:
                 ld1r        { v6.4s }, [x1], #4
                 ld1r        { v7.4s }, [x1], #4
 
-                fmla        v8.4s,  v0.4s,  v4.4s[0] // Multiply and add the elements
-                fmla        v8.4s,  v1.4s,  v5.4s[1]
-                fmla        v8.4s,  v2.4s,  v6.4s[2]
-                fmla        v8.4s,  v3.4s,  v7.4s[3]
+                fmla        v8.4s,  v0.4s,  v4.s[0] // Multiply and add the elements
+                fmla        v8.4s,  v1.4s,  v5.s[1]
+                fmla        v8.4s,  v2.4s,  v6.s[2]
+                fmla        v8.4s,  v3.4s,  v7.s[3]
 
                 st1         { v8.4s }, [x0], #16    // Store destination vector
 
@@ -53,10 +53,10 @@ _mat_x_mat_f:
                 ld1r        { v5.4s }, [x1], #4
                 ld1r        { v6.4s }, [x1], #4
                 ld1r        { v7.4s }, [x1], #4
-                fmla        v8.4s,  v0.4s,  v4.4s[0]
-                fmla        v8.4s,  v1.4s,  v5.4s[1]
-                fmla        v8.4s,  v2.4s,  v6.4s[2]
-                fmla        v8.4s,  v3.4s,  v7.4s[3]
+                fmla        v8.4s,  v0.4s,  v4.s[0]
+                fmla        v8.4s,  v1.4s,  v5.s[1]
+                fmla        v8.4s,  v2.4s,  v6.s[2]
+                fmla        v8.4s,  v3.4s,  v7.s[3]
                 st1         { v8.4s }, [x0], #16
 
                 dup         v8.4s, wzr
@@ -64,10 +64,10 @@ _mat_x_mat_f:
                 ld1r        { v5.4s }, [x1], #4
                 ld1r        { v6.4s }, [x1], #4
                 ld1r        { v7.4s }, [x1], #4
-                fmla        v8.4s,  v0.4s,  v4.4s[0]
-                fmla        v8.4s,  v1.4s,  v5.4s[1]
-                fmla        v8.4s,  v2.4s,  v6.4s[2]
-                fmla        v8.4s,  v3.4s,  v7.4s[3]
+                fmla        v8.4s,  v0.4s,  v4.s[0]
+                fmla        v8.4s,  v1.4s,  v5.s[1]
+                fmla        v8.4s,  v2.4s,  v6.s[2]
+                fmla        v8.4s,  v3.4s,  v7.s[3]
                 st1         { v8.4s }, [x0], #16
 
                 dup         v8.4s, wzr
@@ -75,10 +75,10 @@ _mat_x_mat_f:
                 ld1r        { v5.4s }, [x1], #4
                 ld1r        { v6.4s }, [x1], #4
                 ld1r        { v7.4s }, [x1], #4
-                fmla        v8.4s,  v0.4s,  v4.4s[0]
-                fmla        v8.4s,  v1.4s,  v5.4s[1]
-                fmla        v8.4s,  v2.4s,  v6.4s[2]
-                fmla        v8.4s,  v3.4s,  v7.4s[3]
+                fmla        v8.4s,  v0.4s,  v4.s[0]
+                fmla        v8.4s,  v1.4s,  v5.s[1]
+                fmla        v8.4s,  v2.4s,  v6.s[2]
+                fmla        v8.4s,  v3.4s,  v7.s[3]
                 st1         { v8.4s }, [x0], #16
 
                 mov         x0,     specialized
@@ -130,10 +130,10 @@ _vecarr_x_mat_f2:
                 ld1r        { v6.4s }, [x1], #4
                 ld1r        { v7.4s }, [x1], #4
 
-                fmla        v8.4s,  v0.4s,  v4.4s[0] // Multiply and add the elements
-                fmla        v8.4s,  v1.4s,  v5.4s[1]
-                fmla        v8.4s,  v2.4s,  v6.4s[2]
-                fmla        v8.4s,  v3.4s,  v7.4s[3]
+                fmla        v8.4s,  v0.4s,  v4.s[0] // Multiply and add the elements
+                fmla        v8.4s,  v1.4s,  v5.s[1]
+                fmla        v8.4s,  v2.4s,  v6.s[2]
+                fmla        v8.4s,  v3.4s,  v7.s[3]
 
                 st1         { v8.4s }, [x0], #16    // Store destination vector
 
