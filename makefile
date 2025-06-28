@@ -93,14 +93,17 @@ avx.o: avx.s
 
 arm64: a64cpuid matrix3d-a64loops matrix3d-a64unroll matrix3d-a64intrin matrix3d-a64neon matrix3d-a64sme
 
-a64cpuid: cpuinfo.o cpuid.o
-	gcc $(optdb) -o a64cpuid $(optc) $(optneon) cpuinfo.o cpuid.o
+a64cpuid: cpuinfo.o a64midr.o cpuid.o
+	gcc $(optdb) -o a64cpuid $(optc) $(optneon) cpuinfo.o a64midr.o cpuid.o
 
 a64cpuid.o: cpuinfo.h cpuid.c
 	gcc $(optdb) -o a64cpuid.o -c $(optc) $(optneon) cpuid.c
 
 a64cpuinfo.o: midr.h cpuinfo.h cpuinfo.c
 	gcc $(optdb) -o a64cpuinfo.o -c $(optc) $(optneon) cpuinfo.c
+
+a64midr.o: midr.h midr-a64.s
+	as $(optdb) -o a64midr.o $(optas) midr-a64.s
 
 matrix3d-a64loops: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.o main.cpp
 	g++ $(optdb) -o matrix3d-a64loops $(optcpp) $(optneon) cpuinfo.o main.cpp
@@ -128,22 +131,22 @@ a64sme.o: sme.s
 #-------------------------------------------------------------------------------
 # ARM32 code
 
-arm32: matrix3d-a32loops matrix3d-a32unroll matrix3d-a32intrin # matrix3d-a32neon
+arm32: a32cpuid matrix3d-a32loops matrix3d-a32unroll
 
-matrix3d-a32loops: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.c main.cpp
-	g++ $(optdb) -o matrix3d-a32loops $(optcpp) $(optneon) cpuinfo.c main.cpp
+a32cpuid: cpuinfo.o cpuid.o
+	gcc $(optdb) -o a32cpuid $(optc) $(optneon) cpuinfo.o cpuid.o
 
-matrix3d-a32unroll: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.c main.cpp
-	g++ $(optdb) -o matrix3d-a32unroll $(optcpp) $(optneon) -DUNROLL cpuinfo.c main.cpp
+a32cpuid.o: cpuinfo.h cpuid.c
+	gcc $(optdb) -o a32cpuid.o -c $(optc) $(optneon) cpuid.c
 
-matrix3d-a32intrin: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.c main.cpp
-	g++ $(optdb) -o matrix3d-a32intrin $(optcpp) $(optneon) -DUNROLL -DINTRIN cpuinfo.c main.cpp
+a32cpuinfo.o: midr.h cpuinfo.h cpuinfo.c
+	gcc $(optdb) -o a32cpuinfo.o -c $(optc) $(optneon) cpuinfo.c
 
-matrix3d-a32neon: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.c neon32.o main.cpp
-	g++ $(optdb) -o matrix3d-a32neon $(optcpp) $(optneon) -DUNROLL -DASM cpuinfo.c neon32.o main.cpp
+matrix3d-a32loops: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.o main.cpp
+	g++ $(optdb) -o matrix3d-a32loops $(optcpp) $(optneon) cpuinfo.o main.cpp
 
-neon32.o: neon.s
-	as $(optdb) -o neon32.o $(optas) neon.s
+matrix3d-a32unroll: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.o main.cpp
+	g++ $(optdb) -o matrix3d-a32unroll $(optcpp) $(optneon) -DUNROLL cpuinfo.o main.cpp
 
 
 
@@ -151,4 +154,4 @@ neon32.o: neon.s
 # Quietly clean up
 
 clean:
-	rm -f matrix3d-loops matrix3d-unroll matrix3d-intrin matrix3d-avx a64cpuid matrix3d-a64loops matrix3d-a64unroll matrix3d-a64intrin matrix3d-a64neon matrix3d-a64sme matrix3d-a32loops matrix3d-a32unroll matrix3d-a32intrin matrix3d-a32neon a.out *.o
+	rm -f matrix3d-loops matrix3d-unroll matrix3d-intrin matrix3d-avx a64cpuid matrix3d-a64loops matrix3d-a64unroll matrix3d-a64intrin matrix3d-a64neon matrix3d-a64sme a32cpuid matrix3d-a32loops matrix3d-a32unroll a.out *.o
