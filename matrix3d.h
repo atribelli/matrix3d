@@ -20,29 +20,31 @@ const int alignment = 256 / 8;
 // Enumeration identifying specializations
 
 enum specialized {
-    primary,    // Primary C++ implementation using loops
+    loops,      // Primary C++ implementation using loops
     unroll,     // Specialized implmentation with unrolled loops
+    intrin,     // Specialized implmentation with SIMD Intrinsics
     intel,      // Specialized implmentation with Intel SIMD Intrinsics
     intel256,   //   Pairs of floats in 256-bit registers
-    arm,        // Specialized implmentation with ARM SIMD Intrinsics
     avx,        // Specialized implmentation with Intel AVX2 Assembly language
     avx256,     //   Pairs of floats in 256-bit registers
     avx512,     //   Pairs of doubles and quads of floats in 512-bit registers
     neon,       // Specialized implmentation with ARM NEON Assembly language
+    sme,        // Specialized implmentation with ARM SME Assembly language
     other       // Something is wrong if this is reported
 };
 
 inline const char *get_string(specialized spec) {
     switch (spec) {
-        case  primary  : return "primary ";
+        case  loops    : return "loops   ";
         case  unroll   : return "unroll  ";
+        case  intrin   : return "intrin  ";
         case  intel    : return "intel   ";
         case  intel256 : return "intel256";
-        case  arm      : return "arm     ";
         case  avx      : return "avx     ";
         case  avx256   : return "avx256  ";
         case  avx512   : return "avx512  ";
         case  neon     : return "neon    ";
+        case  sme      : return "sme     ";
         default        : return "other   ";
     }
 }
@@ -189,7 +191,7 @@ inline specialized mat_x_mat(mat<T, MAJ, MIN> &dest,
         }
     }
     
-    return primary;
+    return loops;
 }
 
 template <typename T, size_t MAJ, size_t MIN, size_t K>
@@ -253,7 +255,7 @@ inline specialized vec_x_mat(vec <T, MIN>      &dest,
         dest.v[j] = sum;
     }
     
-    return primary;
+    return loops;
 }
 
 template <typename T, size_t MAJ, size_t MIN>
@@ -292,7 +294,7 @@ inline specialized vecarr_x_mat(vec <T, MAJ>      *dest,
         }
     }
     
-    return primary;
+    return loops;
 }
 
 template <typename T, size_t MAJ, size_t MIN>

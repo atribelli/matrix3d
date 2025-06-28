@@ -13,11 +13,14 @@ matrix3d.mak - Windows builds.
 matrix3d.h - Generic C++ implementations.  
 matrix3d44.h - Unrolled C++ and intrinsics implementations.  
 timer.h - Determine elapsed time.  
+midr.h  
 cpuinfo.h  
-cpuinfo.cpp - Gets CPU info and features.  
+cpuinfo.c - Gets CPU info and features.  
+cpuid.c - Displays cpu info.  
 avx.asm - Intel assembly implementation for Windows.  
 avx.s - Intel assembly implementations for macOS and Linux.  
-neon.s - ARM assembly implementation for Linux.  
+neon.s - ARM assembly implementation for macOS and Linux.  
+sme.s  
 main.cpp - Testing and timing code.  
 params.txt - Inputs for testing code.
 

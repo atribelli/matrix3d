@@ -481,7 +481,7 @@ inline specialized mat_x_mat(mat<float, 4, 4> &dest,
     vec0 = vaddq_f32     (vec0, vec1);
            vst1q_f32     (pd + 12, vec0);
 
-    return arm;
+    return intrin;
 }
 
 
@@ -519,7 +519,7 @@ inline specialized vecarr_x_mat(vec <float, 4>    *dest,
                vst1q_f32     (pd, vec0);    // Store a vector
     }
 
-    return arm;
+    return intrin;
 }
 
 
