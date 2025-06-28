@@ -105,23 +105,23 @@ a64cpuinfo.o: midr.h cpuinfo.h cpuinfo.c
 a64midr.o: midr.h midr-a64.s
 	as $(optdb) -o a64midr.o $(optas) midr-a64.s
 
-matrix3d-a64loops: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.o main.cpp
-	g++ $(optdb) -o matrix3d-a64loops $(optcpp) $(optneon) cpuinfo.o main.cpp
+matrix3d-a64loops: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.o a64midr.o  main.cpp
+	g++ $(optdb) -o matrix3d-a64loops $(optcpp) $(optneon) cpuinfo.o a64midr.o main.cpp
 
-matrix3d-a64unroll: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.o main.cpp
-	g++ $(optdb) -o matrix3d-a64unroll $(optcpp) $(optneon) -DUNROLL cpuinfo.o main.cpp
+matrix3d-a64unroll: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.o a64midr.o main.cpp
+	g++ $(optdb) -o matrix3d-a64unroll $(optcpp) $(optneon) -DUNROLL cpuinfo.o a64midr.o main.cpp
 
-matrix3d-a64intrin: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.o main.cpp
-	g++ $(optdb) -o matrix3d-a64intrin $(optcpp) $(optneon) -DUNROLL -DINTRIN cpuinfo.o main.cpp
+matrix3d-a64intrin: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.o a64midr.o main.cpp
+	g++ $(optdb) -o matrix3d-a64intrin $(optcpp) $(optneon) -DUNROLL -DINTRIN cpuinfo.o a64midr.o main.cpp
 
-matrix3d-a64neon: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.o a64neon.o main.cpp
-	g++ $(optdb) -o matrix3d-a64neon $(optcpp) $(optneon) -DUNROLL -DASM cpuinfo.o a64neon.o main.cpp
+matrix3d-a64neon: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.o a64midr.o a64neon.o main.cpp
+	g++ $(optdb) -o matrix3d-a64neon $(optcpp) $(optneon) -DUNROLL -DASM cpuinfo.o a64midr.o a64neon.o main.cpp
 
 a64neon.o: neon.s
 	as $(optdb) -o a64neon.o $(optas) neon.s
 
-matrix3d-a64sme: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.o a64sme.o main.cpp
-	g++ $(optdb) -o matrix3d-a64sme $(optcpp) $(optneon) -DUNROLL -DASM cpuinfo.o a64sme.o main.cpp
+matrix3d-a64sme: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.o a64midr.o a64sme.o main.cpp
+	g++ $(optdb) -o matrix3d-a64sme $(optcpp) $(optneon) -DUNROLL -DASM cpuinfo.o a64midr.o a64sme.o main.cpp
 
 a64sme.o: sme.s
 	as $(optdb) -o a64sme.o $(optas) sme.s
