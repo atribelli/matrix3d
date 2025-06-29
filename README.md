@@ -27,20 +27,23 @@ params.txt - Inputs for testing code.
 Inside the *mac* and *win* subfolders you will find Xcode and Visual Studio projects for development and debugging.
 
 ## Building  
-make intel - Builds executables for Intel: matrix3d-loops, matrix3d-unroll, matrix3d-intrin, and matrix3d-avx.  
-make arm64 - Builds executables for ARM64: matrix3d-a64loops, matrix3d-a64unroll, matrix3d-a64intrin, and matrix3d-neon64.  
-make arm32 - Builds executables for ARM32: matrix3d-a32loops, matrix3d-a32unroll, and matrix3d-a32intrin.  
-make clean - Removes executable and build files.  
+make - Detects OS and architecture and builds intel, arm64, or arm32 code.  
+intel: cpuid, matrix3d-loops, matrix3d-unroll, matrix3d-intrin, and matrix3d-avx.  
+arm64: a64cpuid, matrix3d-a64loops, matrix3d-a64unroll, matrix3d-a64intrin, and matrix3d-a64neon.  
+arm32: a32cpuid, matrix3d-a32loops, matrix3d-a32unroll, and matrix3d-a32intrin.  
+make clean - Remove executable and build files.  
 nmake /f matrix3d.mak - Builds executables for Windows: matrix3d-loops, matrix3d-unroll, matrix3d-intrin, and matrix3d-avx.  
 nmake /f matrix3d.mak clean - Removes executable and build files under Windows.
 
 ## Testing  
 Intel based Mac.  
 ARM based Mac.  
-Windows PC.  
-Linux PC.  
-Raspberry Pi 64-bit.  
-Raspberry Pi 32-bit.
+Intel based Windows PC.  
+ARM based Windows PC (Virtualized on Mac).  
+Intel based Linux PC.  
+ARM based Linux PC (Virtualized on Mac).  
+Raspberry Pi 64-bit (ARM64 Linux).  
+Raspberry Pi 32-bit (ARM32 Linux).  
 
 ## Code  
 C++ Templates are used so that I can conveniently test code on different data types in the same executable, and to handle arbitrary matrix and vector dimensions. In a "real world" application I might define a ```real``` type that is an alias for whatever actual type I wanted to use and just use templates for things like automatically matching matrix dimensions (Ex RxC = RxK * KxC).
@@ -54,17 +57,18 @@ INTRIN256 - Same as SIMD macro but also has ```float``` code use 8 lanes, to pro
 ASM - SIMD assemblty language template specializations.  
 ASM256 - Same as ASM macro but with 8 lane ```float``` code.
 
-## Example  
+## Examples  
 The template specialization used for a calculation is shown next to the timing information.  
+Note assembly language implementations like avx and neon have a disadvantage since they require function calls.  
+What C implementation works best. The relative rankings of C, simd intrinsics, or simd asm. Will all vary depending on system architecture and CPU generation.
 ```
-% make intel
-g++  -o matrix3d-loops -std=c++17 -O3 -march=haswell cpuinfo.cpp main.cpp
-g++  -o matrix3d-unroll -std=c++17 -O3 -march=haswell -DUNROLL cpuinfo.cpp main.cpp
-g++  -o matrix3d-intrin -std=c++17 -O3 -march=haswell -DUNROLL -DINTRIN256 cpuinfo.cpp main.cpp
-as  -o avx.o  avx.s
-g++  -o matrix3d-avx -std=c++17 -O3 -march=haswell -DUNROLL -DASM256 cpuinfo.cpp avx.o main.cpp
-% ./matrix3d-loops 
-Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz
+$ make
+Linux detected
+Intel detected
+...
+$ ./matrix3d-loops
+GenuineIntel 11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz Family 6 Model 140 4-Core 
+SSE3 SSE4.2 AVX AVX2 GEN4 AVX512-F-CD AVX512-VL-DQ-BW AVX512-IFMA-VBMI 
 mata  4x4 * matb  4x4 float  test passed
 mata  4x4 * matb  4x4 double test passed
 matb  4x4 * mata  4x4 float  test passed
@@ -82,31 +86,94 @@ matb  3x3 * mata  3x3 int    test passed
 iterations          1,000,000,000
 vec array elements  300
                 float               double
-mata x matb    1,382 ms primary     1,393 ms primary 
-matb x mata    1,357 ms primary     1,376 ms primary 
-vec[] x mat    1,224 ms primary     1,214 ms primary 
-mat x vec[]    1,228 ms primary     1,204 ms primary 
-% ./matrix3d-unroll 
+mata x matb      288 ms loops         295 ms loops   
+matb x mata      263 ms loops         324 ms loops   
+vec[] x mat      988 ms loops       1,962 ms loops   
+mat x vec[]      987 ms loops       1,967 ms loops   
+$ ./matrix3d-unroll
 ...
                 float               double
-mata x matb    1,416 ms unroll      1,464 ms unroll  
-matb x mata    1,490 ms unroll      1,368 ms unroll  
-vec[] x mat    1,231 ms unroll      1,205 ms unroll  
-mat x vec[]    1,221 ms unroll      1,193 ms unroll  
-% ./matrix3d-intrin 
+mata x matb      340 ms unroll        287 ms unroll  
+matb x mata      274 ms unroll        283 ms unroll  
+vec[] x mat      484 ms unroll        755 ms unroll  
+mat x vec[]      487 ms unroll        763 ms unroll  
+$ ./matrix3d-intrin 
 ...
                 float               double
-mata x matb    1,412 ms intel       1,390 ms intel   
-matb x mata    1,413 ms intel       1,356 ms intel   
-vec[] x mat      656 ms intel256      747 ms intel   
-mat x vec[]      654 ms intel256      741 ms intel   
-% ./matrix3d-avx
+mata x matb      993 ms intel       1,015 ms intel   
+matb x mata      987 ms intel         998 ms intel   
+vec[] x mat      486 ms intel256      737 ms intel   
+mat x vec[]      485 ms intel256      736 ms intel   
+$ ./matrix3d-avx
 ...
                 float               double
-mata x matb    3,887 ms avx         3,855 ms avx     
-matb x mata    3,856 ms avx         3,865 ms avx     
-vec[] x mat      719 ms avx256        896 ms avx     
-mat x vec[]      725 ms avx256        892 ms avx     
+mata x matb    3,569 ms avx         3,677 ms avx     
+matb x mata   16,323 ms avx         3,680 ms avx     
+vec[] x mat      559 ms avx256        740 ms avx     
+mat x vec[]      560 ms avx256        738 ms avx     
+
+% make  
+macOS detected
+ARM detected
+...
+% ./matrix3d-a64loops
+Apple M4 Armv9 10-Core 
+Performance:4 Efficiency:6 NEON SME SME2 
+...
+                float               double
+mata x matb      301 ms loops         346 ms loops   
+matb x mata      291 ms loops         263 ms loops   
+vec[] x mat      493 ms loops         978 ms loops   
+mat x vec[]      491 ms loops         977 ms loops   
+% ./matrix3d-a64unroll
+...
+                float               double
+mata x matb      345 ms unroll        306 ms unroll  
+matb x mata      311 ms unroll        320 ms unroll  
+vec[] x mat      487 ms unroll        974 ms unroll  
+mat x vec[]      489 ms unroll        974 ms unroll  
+% ./matrix3d-a64intrin
+...
+                float               
+mata x matb      341 ms intrin      
+matb x mata      347 ms intrin      
+vec[] x mat      431 ms intrin      
+mat x vec[]      432 ms intrin      
+% ./matrix3d-a64neon  
+...
+                float               
+mata x matb    2,278 ms neon        
+matb x mata    2,248 ms neon        
+vec[] x mat      946 ms neon        
+mat x vec[]      945 ms neon        
+
+$ make
+Linux detected
+ARM32 detected
+...
+$ ./matrix3d-a32loops
+ARM Raspberry Pi 3 Model B Plus Rev 1.3 Cortex-A53 4-Core 
+half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm crc32 
+...
+                float               double
+mata x matb    5,759 ms loops       5,842 ms loops   
+matb x mata    5,841 ms loops       5,841 ms loops   
+vec[] x mat   25,090 ms loops      28,430 ms loops   
+mat x vec[]   25,090 ms loops      28,428 ms loops   
+$ ./matrix3d-a32unroll
+...
+                float               double
+mata x matb    5,882 ms unroll      5,841 ms unroll  
+matb x mata    5,841 ms unroll      5,841 ms unroll  
+vec[] x mat   25,088 ms unroll     25,089 ms unroll  
+mat x vec[]   25,085 ms unroll     25,090 ms unroll  
+$ ./matrix3d-a32intrin
+...
+                float              
+mata x matb   81,009 ms intrin     
+matb x mata   80,974 ms intrin     
+vec[] x mat   27,610 ms intrin     
+mat x vec[]   27,614 ms intrin     
 ```
 
 ## To-do
