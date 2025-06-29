@@ -155,7 +155,7 @@ matrix3d-a32loops: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.o main.cpp
 	g++ $(optdb) -o matrix3d-a32loops $(optcpp) $(optarch) cpuinfo.o main.cpp
 
 matrix3d-a32unroll: timer.h cpuinfo.h matrix3d.h matrix3d44.h cpuinfo.o main.cpp
-	g++ $(optdb) -o matrix3d-a32unroll $(optcpp) $(optneon) -DUNROLL cpuinfo.o main.cpp
+	g++ $(optdb) -o matrix3d-a32unroll $(optcpp) $(optarch) -DUNROLL cpuinfo.o main.cpp
 
 
 
