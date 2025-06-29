@@ -139,19 +139,43 @@ int main(void) {
     // Verify CPU features and identity CPU
     
 #if defined(__x86_64__) || defined(_M_X64)  // 64-bit Intel
-    char buffer[64];
-
     // Make sure we have the proper level of CPU functionality (Haswell)
     if (! is_cpu_gen_4()) {
         cout << "CPU is not x86-64 4th gen compatible" << endl;
         exit(1);
     }
+#endif
 
-    // Identify the CPU
+    char buffer[2048];
+    bool success = false;
+    
+    if (get_cpu_vendor(buffer, sizeof(buffer))) {
+        cout << (char *) buffer << " ";
+        success = true;
+    }
+    
     if (get_cpu_brand(buffer, sizeof(buffer))) {
+        cout << (char *) buffer << " ";
+        success = true;
+    }
+    
+    if (get_cpu_part(buffer, sizeof(buffer))) {
+        cout << (char *) buffer << " ";
+        success = true;
+    }
+    
+    if (get_cpu_cores(buffer, sizeof(buffer))) {
+        cout << (char *) buffer << " ";
+        success = true;
+    }
+
+    if (success) {
+        cout << endl;
+    }
+    
+    if (get_cpu_features(buffer, sizeof(buffer))) {
         cout << (char *) buffer << endl;
     }
-#endif
 
     
     
