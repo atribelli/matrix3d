@@ -65,6 +65,8 @@ $(info ARM detected)
 optarch = -march=armv8-a
 target  = arm64
 simd    = neon
+headers = midr.h
+objs    = midr.o
 
 endif   # ARM, Intel, 32-bit
 endif   # Linux, Darwin
