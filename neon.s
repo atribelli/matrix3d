@@ -6,7 +6,8 @@
 //     vecarr_x_mat_f    Matrix and vector 4x4 multiplication
 //     vecarr_x_mat_d
 
-specialized     =           8                       // Must match C enumeration
+specialized     =           7                       // Must match C enumeration
+zero            =           10
 
                 .text
                 .balign     4
@@ -109,7 +110,7 @@ _mat_x_mat_d:
                 st1         { v8.4s }, [x0], #16
                 st1         { v8.4s }, [x0], #16
 
-                mov         x0,     #11
+                mov         x0,     zero
                 ret
 
 
@@ -176,5 +177,5 @@ _vecarr_x_mat_d:
                 subs        x3,     x3,     #1
                 bne         1b
 
-                mov         x0,     #11
+                mov         x0,     zero
                 ret
