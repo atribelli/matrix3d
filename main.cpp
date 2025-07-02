@@ -2,20 +2,19 @@
 //  Assuming C++17
 //
 //  Intel Mac:
-//      clang++ -std=c++17 -march=haswell -O3 main.cpp cpuinfo.cpp
-//      clang++ -std=c++17 -march=haswell -O3 -DASM main.cpp cpuinfo.cpp avx.s
+//      clang++ -std=c++17 -march=haswell -O3 main.cpp cpuinfo.c
+//      clang++ -std=c++17 -march=haswell -O3 -DASM main.cpp cpuinfo.c avx.s
 //  ARM Mac:
 //      clang++ -std=c++17 -march=armv8-a -O3 main.cpp cpuinfo.c
 //      clang++ -std=c++17 -march=armv8-a -O3 -DASM main.cpp cpuinfo.c neon.s
-//  Linux:
-//      g++ -std=c++17 -march=haswell -O3 main.cpp cpuinfo.cpp
+//  Intel Linux:
+//      g++ -std=c++17 -march=haswell -O3 main.cpp cpuinfo.c
 //      as -o avx.o --defsym IsLinux=1 avx.s
-//      g++ -std=c++17 -march=haswell -O3 -DIsLinux -DASM main.cpp cpuinfo.cpp avx.o
+//      g++ -std=c++17 -march=haswell -O3 -DIsLinux -DASM main.cpp cpuinfo.c avx.o
 //  Raspberry Pi
 //      g++ -std=c++17 -march=armv8-a -O3 main.cpp cpuinfo.cpp
 //      g++ -std=c++17 -march=armv8-a -O3 -DASM main.cpp cpuinfo.cpp neon.s
-//      g++ -std=c++17 -march=armv7-a -mfpu=neon-vfpv3 -O3 main.cpp cpuinfo.cpp
-//      g++ -std=c++17 -march=armv7-a -mfpu=neon-vfpv3 -O3 main.cpp cpuinfo.cpp neon.s
+//      g++ -std=c++17 -march=armv7-a -mfpu=neon-vfpv3 -O3 main.cpp cpuinfo.c
 //  Windows:
 //      cl /std:c++17 /arch:AVX2 /O2 /EHsc main.cpp cpuinfo.cpp
 //      ml64 /c /Feavx avx.asm

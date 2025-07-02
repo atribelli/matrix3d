@@ -23,8 +23,7 @@ enum specialized {
     loops,      // Primary C++ implementation using loops
     unroll,     // Specialized implmentation with unrolled loops
     intrin,     // Specialized implmentation with SIMD Intrinsics
-    intel,      // Specialized implmentation with Intel SIMD Intrinsics
-    intel256,   //   Pairs of floats in 256-bit registers
+    intrin256,  //   Pairs of floats in 256-bit registers
     avx,        // Specialized implmentation with Intel AVX2 assembly language
     avx256,     //   Pairs of floats in 256-bit registers
     avx512,     //   Pairs of doubles and quads of floats in 512-bit registers
@@ -37,19 +36,18 @@ enum specialized {
 
 inline const char *get_string(specialized spec) {
     switch (spec) {
-        case  loops    : return "loops   ";
-        case  unroll   : return "unroll  ";
-        case  intrin   : return "intrin  ";
-        case  intel    : return "intel   ";
-        case  intel256 : return "intel256";
-        case  avx      : return "avx     ";
-        case  avx256   : return "avx256  ";
-        case  avx512   : return "avx512  ";
-        case  neon     : return "neon    ";
-        case  sve      : return "sve     ";
-        case  sme      : return "sme     ";
-        case  zero     : return "zero    ";
-        default        : return "other   ";
+        case  loops     : return "loops    ";
+        case  unroll    : return "unroll   ";
+        case  intrin    : return "intrin   ";
+        case  intrin256 : return "intrin256";
+        case  avx       : return "avx      ";
+        case  avx256    : return "avx256   ";
+        case  avx512    : return "avx512   ";
+        case  neon      : return "neon     ";
+        case  sve       : return "sve      ";
+        case  sme       : return "sme      ";
+        case  zero      : return "zero     ";
+        default         : return "other    ";
     }
 }
 

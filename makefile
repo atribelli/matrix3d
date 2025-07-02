@@ -114,7 +114,7 @@ avx: timer.h cpuinfo.h matrix3d.h matrix3d44.h main.cpp cpuinfo.o avx.o $(objs)
 # Intel code
 
 avx.o: avx.s
-	as $(optdb) -o avx.o $(optarch) $(optas) avx.s
+	as $(optdb) -o avx.o $(optas) avx.s
 
 
 

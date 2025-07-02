@@ -12,7 +12,7 @@
                 .section    .note.GNU-stack, "", %progbits
                 .endif
 
-specialized     =           5                       # Must match C enumeration
+specialized     =           4                       # Must match C enumeration
 
                 .text
                 .balign     4

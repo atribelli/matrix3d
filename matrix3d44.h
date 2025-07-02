@@ -231,7 +231,7 @@ inline specialized mat_x_mat(mat<float, 4, 4> &dest,
     vecd = _mm_fmadd_ps   (row3, vec3, vecd);
            _mm_store_ps   (pd + 12, vecd);
     
-    return intel;
+    return intrin;
 }
 
 template <>
@@ -292,7 +292,7 @@ inline specialized mat_x_mat(mat<double, 4, 4> &dest,
     vecd = _mm256_fmadd_pd    (row3, vec3, vecd);
            _mm256_store_pd    (pd + 12, vecd);
     
-    return intel;
+    return intrin;
 }
 
 
@@ -345,7 +345,7 @@ inline specialized vecarr_x_mat(vec <float, 4>    *dest,
                _mm256_store_ps   (pd, vecd);            // Store a vector
     }
     
-    return intel256;
+    return intrin256;
 
 // Single vector, 4 lane, implementations
 #else
@@ -373,7 +373,7 @@ inline specialized vecarr_x_mat(vec <float, 4>    *dest,
                _mm_store_ps   (pd, vecd);               // Store a vector
     }
     
-    return intel;
+    return intrin;
 
 #endif  // INTRIN256
 }
@@ -406,7 +406,7 @@ inline specialized vecarr_x_mat(vec <double, 4>    *dest,
                _mm256_store_pd   (pd, vecd);            // Store a vector
     }
     
-    return intel;
+    return intrin;
 }
 
 

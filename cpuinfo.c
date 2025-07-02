@@ -726,7 +726,7 @@ bool cpu_has_sse3(void) {
 
 #if defined(__linux__)                      // Linux
 
-static char *get_proc_cpuinfo_entry(FILE *fp, char *entry) {
+static char *get_proc_cpuinfo_entry(FILE *fp, const char *entry) {
     if (fp != NULL && entry != NULL) {
         static char buf[2048];              // Not thread safe
         
@@ -759,7 +759,10 @@ static char *get_proc_cpuinfo_entry(FILE *fp, char *entry) {
     return NULL;
 }
 
-static int get_proc_cpuinfo_value(FILE *fp, char *entry, int base, int error) {
+static int get_proc_cpuinfo_value(FILE       *fp,
+                                  const char *entry,
+                                  int        base,
+                                  int        error) {
     if (fp != NULL && entry != NULL) {
         char *result = get_proc_cpuinfo_entry(fp, entry);
 
