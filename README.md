@@ -28,9 +28,9 @@ Inside the *mac* and *win* subfolders you will find Xcode and Visual Studio proj
 
 ## Building  
 make - Detects OS and architecture and builds intel, arm64, or arm32 code.  
-intel: cpuid, matrix3d-loops, matrix3d-unroll, matrix3d-intrin, and matrix3d-avx.  
-arm64: a64cpuid, matrix3d-a64loops, matrix3d-a64unroll, matrix3d-a64intrin, and matrix3d-a64neon.  
-arm32: a32cpuid, matrix3d-a32loops, matrix3d-a32unroll, and matrix3d-a32intrin.  
+intel: cpuid loops unroll intrin avx.  
+arm64: cpuid loops unroll intrin neon.  
+arm32: cpuid loops unroll intrin.  
 make clean - Remove executable and build files.  
 nmake /f matrix3d.mak - Builds executables for Windows: matrix3d-loops, matrix3d-unroll, matrix3d-intrin, and matrix3d-avx.  
 nmake /f matrix3d.mak clean - Removes executable and build files under Windows.

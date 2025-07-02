@@ -25,11 +25,13 @@ enum specialized {
     intrin,     // Specialized implmentation with SIMD Intrinsics
     intel,      // Specialized implmentation with Intel SIMD Intrinsics
     intel256,   //   Pairs of floats in 256-bit registers
-    avx,        // Specialized implmentation with Intel AVX2 Assembly language
+    avx,        // Specialized implmentation with Intel AVX2 assembly language
     avx256,     //   Pairs of floats in 256-bit registers
     avx512,     //   Pairs of doubles and quads of floats in 512-bit registers
-    neon,       // Specialized implmentation with ARM NEON Assembly language
-    sme,        // Specialized implmentation with ARM SME Assembly language
+    neon,       // Specialized implmentation with ARM NEON assembly language
+    sve,        // Specialized implmentation with ARM SVE2 assembly language
+    sme,        // Specialized implmentation with ARM SME assembly language
+    zero,       // Desired code not implemented, zero'd data instead
     other       // Something is wrong if this is reported
 };
 
@@ -44,7 +46,9 @@ inline const char *get_string(specialized spec) {
         case  avx256   : return "avx256  ";
         case  avx512   : return "avx512  ";
         case  neon     : return "neon    ";
+        case  sve      : return "sve     ";
         case  sme      : return "sme     ";
+        case  zero     : return "zero    ";
         default        : return "other   ";
     }
 }

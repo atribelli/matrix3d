@@ -1244,14 +1244,14 @@ bool get_cpu_features_arm(char *buffer, size_t len) {
     // mrs x0, ID_AA64ISAR0_EL1
     // Dot Product, bits [47:44]
     uint64_t isar0 = get_isar0();
-    if ((isar0 >> 44) & 0x0f) {
+    if (((isar0 >> 44) & 0x0f) == 0b0001) {
         strcat(features, "DP ");
     }
 
     // mrs x0, ID_AA64ISAR1_EL1
     //  Complex number addition and multiplication,, bits [19:16]
     uint64_t isar1 = get_isar1();
-    if ((isar1 >> 16) & 0x0f) {
+    if (((isar1 >> 16) & 0x0f) == 0b0001) {
         strcat(features, "FCMA ");
     }
 
@@ -1259,15 +1259,35 @@ bool get_cpu_features_arm(char *buffer, size_t len) {
     //  Scalable Vector Extension, bits [35:32]
     //  Advanced SIMD,             bits [23:20]
     //  Floating Point,            bits [19:16]
-    uint64_t pfr0 = get_pfr0();
-    if ((pfr0 >> 32) & 0x0f) {
+    uint64_t pfr0    = get_pfr0();
+    uint64_t sve     = (pfr0 >> 32) & 0x0f;
+    uint64_t advsimd = (pfr0 >> 20) & 0x0f;
+    uint64_t fp      = (pfr0 >> 16) & 0x0f;
+    if (sve == 0b0001) {
         strcat(features, "SVE ");
     }
-    if ((pfr0 >> 20) & 0x0f) {
+    if (advsimd == 0b0000) {
         strcat(features, "AdvSIMD ");
     }
-    if ((pfr0 >> 16) & 0x0f) {
+    else if (advsimd == 0b0001) {
+        strcat(features, "AdvSIMD+FP16 ");
+    }
+    if (fp == 0b0000) {
         strcat(features, "FP ");
+    }
+    else if (fp == 0b0001) {
+        strcat(features, "FP+FP16 ");
+    }
+
+    // mrs x0, ID_AA64PFR1_EL1
+    //  Scalable Matrix Extension, bits [27:24]
+    uint64_t pfr1 = get_pfr1();
+    uint64_t sme  = (pfr1 >> 24) & 0x0f;
+    if (sme == 0b0001) {
+        strcat(features, "SME ");
+    }
+    else if (sme == 0b0010) {
+        strcat(features, "SME2 ");
     }
 
     bufterm(features);
@@ -1284,10 +1304,10 @@ bool get_cpu_features_arm(char *buffer, size_t len) {
 
 #if defined(__APPLE__)                      // macOS
 
-static bool append_cpu_core_entry(char *features,
-                                  char *entry,
-                                  int   i,
-                                  bool  text) {
+static bool append_cpu_core_entry(char       *features,
+                                  const char *entry,
+                                  int        i,
+                                  bool       text) {
     // Make sure we have a destination and a name to lookup
     if (features == NULL || entry == NULL)
         return false;
@@ -1393,6 +1413,14 @@ bool get_cpu_features(char *buffer, size_t len) {
     if (   sysctlbyname("hw.optional.neon", &ret, &size, NULL, 0) == 0
         && ret == 1) {
         strcat(features, "NEON ");
+    }
+    if (   sysctlbyname("hw.optional.arm.FEAT_SVE", &ret, &size, NULL, 0) == 0
+        && ret == 1) {
+        strcat(features, "SVE ");
+    }
+    if (   sysctlbyname("hw.optional.arm.FEAT_SVE2", &ret, &size, NULL, 0) == 0
+        && ret == 1) {
+        strcat(features, "SVE2 ");
     }
     if (   sysctlbyname("hw.optional.arm.FEAT_SME", &ret, &size, NULL, 0) == 0
         && ret == 1) {

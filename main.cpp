@@ -1,9 +1,12 @@
 //  main.cpp
 //  Assuming C++17
 //
-//  Mac:
+//  Intel Mac:
 //      clang++ -std=c++17 -march=haswell -O3 main.cpp cpuinfo.cpp
 //      clang++ -std=c++17 -march=haswell -O3 -DASM main.cpp cpuinfo.cpp avx.s
+//  ARM Mac:
+//      clang++ -std=c++17 -march=armv8-a -O3 main.cpp cpuinfo.c
+//      clang++ -std=c++17 -march=armv8-a -O3 -DASM main.cpp cpuinfo.c neon.s
 //  Linux:
 //      g++ -std=c++17 -march=haswell -O3 main.cpp cpuinfo.cpp
 //      as -o avx.o --defsym IsLinux=1 avx.s
@@ -690,19 +693,16 @@ int main(void) {
     // -------------------------------------------------------------------------
     // Time the multiplcations
 
-    // Use volatile to prevent optimizer from removing code
-    volatile int no_opt_i;
-
-    auto specf = other;
+    volatile auto specf = other;
     timer<int, std::milli> timer;
-    for (no_opt_i = 0; no_opt_i < int(iterations); no_opt_i = no_opt_i + 1) {
+    for (int i = 0; i < iterations; ++i) {
         specf = rmata_x_rmatb(drmatf, srmataf, srmatbf);
     }
     auto millif = timer.elapsed();
 
-    auto specd = other;
+    volatile auto specd = other;
     timer.start();
-    for (no_opt_i = 0; no_opt_i < int(iterations); no_opt_i = no_opt_i + 1) {
+    for (int i = 0; i < iterations; ++i) {
         specd = rmata_x_rmatb(drmatd, srmatad, srmatbd);
     }
     auto millid = timer.elapsed();
@@ -718,14 +718,14 @@ int main(void) {
 
     specf = other;
     timer.start();
-    for (no_opt_i = 0; no_opt_i < int(iterations); no_opt_i = no_opt_i + 1) {
+    for (int i = 0; i < iterations; ++i) {
         specf = cmatb_x_cmata(dcmatf, scmatbf, scmataf);
     }
     millif = timer.elapsed();
 
     specd = other;
     timer.start();
-    for (no_opt_i = 0; no_opt_i < int(iterations); no_opt_i = no_opt_i + 1) {
+    for (int i = 0; i < iterations; ++i) {
         specd = cmatb_x_cmata(dcmatd, scmatbd, scmatad);
     }
     millid = timer.elapsed();
@@ -735,19 +735,16 @@ int main(void) {
                            << setw(width) << millid << " ms "
                            << get_string(specd)     << endl;
 
-    // Scale the number of loops for array operations
-    auto n = int(iterations / elements);
-
     specf = other;
     timer.start();
-    for (no_opt_i = 0; no_opt_i < n; no_opt_i = no_opt_i + 1) {
+    for (int i = 0; i < iterations / elements; ++i) {
         specf = rvecarr_x_rmat(drvecarrf, srvecarrf, srmataf, elements);
     }
     millif = timer.elapsed();
 
     specd = other;
     timer.start();
-    for (no_opt_i = 0; no_opt_i < n; no_opt_i = no_opt_i + 1) {
+    for (int i = 0; i < iterations / elements; ++i) {
         specd = rvecarr_x_rmat(drvecarrd, srvecarrd, srmatad, elements);
     }
     millid = timer.elapsed();
@@ -759,14 +756,14 @@ int main(void) {
 
     specf = other;
     timer.start();
-    for (no_opt_i = 0; no_opt_i < n; no_opt_i = no_opt_i + 1) {
+    for (int i = 0; i < iterations / elements; ++i) {
         specf = cmat_x_cvecarr(dcvecarrf, scmataf, scvecarrf, elements);
     }
     millif = timer.elapsed();
 
     specd = other;
     timer.start();
-    for (no_opt_i = 0; no_opt_i < n; no_opt_i = no_opt_i + 1) {
+    for (int i = 0; i < iterations / elements; ++i) {
         specd = cmat_x_cvecarr(dcvecarrd, scmatad, scvecarrd, elements);
     }
     millid = timer.elapsed();

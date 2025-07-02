@@ -7,27 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BB08B78D2B99638300BE8C21 /* cpuinfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB08B7852B99638300BE8C21 /* cpuinfo.cpp */; };
+		BB08B78D2B99638300BE8C21 /* cpuinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = BB08B7852B99638300BE8C21 /* cpuinfo.c */; };
 		BB08B78F2B99638300BE8C21 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB08B7892B99638300BE8C21 /* main.cpp */; };
-		BB988A192BA61CBE0057FC04 /* avx.s in Sources */ = {isa = PBXBuildFile; fileRef = BB988A182BA61CBE0057FC04 /* avx.s */; };
+		BBE60FD12E13C588004807E1 /* neon.s in Sources */ = {isa = PBXBuildFile; fileRef = BB988A1B2BA61CDC0057FC04 /* neon.s */; };
+		BBE60FD22E13C765004807E1 /* params.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = BB08B7C52BA15DB100BE8C21 /* params.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		BB08B7742B99633800BE8C21 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 16;
 			files = (
+				BBE60FD22E13C765004807E1 /* params.txt in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		BB08B7762B99633800BE8C21 /* matrix3d */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = matrix3d; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB08B7812B99638300BE8C21 /* cpuinfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpuinfo.h; path = ../../../cpuinfo.h; sourceTree = "<group>"; };
-		BB08B7852B99638300BE8C21 /* cpuinfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cpuinfo.cpp; path = ../../../cpuinfo.cpp; sourceTree = "<group>"; };
+		BB08B7852B99638300BE8C21 /* cpuinfo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cpuinfo.c; path = ../../../cpuinfo.c; sourceTree = "<group>"; };
 		BB08B7882B99638300BE8C21 /* timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = timer.h; path = ../../../timer.h; sourceTree = "<group>"; };
 		BB08B7892B99638300BE8C21 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../../main.cpp; sourceTree = "<group>"; };
 		BB08B79B2B99665A00BE8C21 /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = LICENSE.md; path = ../../../LICENSE.md; sourceTree = "<group>"; };
@@ -77,8 +79,8 @@
 				BB08B7812B99638300BE8C21 /* cpuinfo.h */,
 				BB08B7C22BA15D3300BE8C21 /* matrix3d.h */,
 				BB08B7C12BA15D3300BE8C21 /* matrix3d44.h */,
-				BB08B7852B99638300BE8C21 /* cpuinfo.cpp */,
-				BB988A182BA61CBE0057FC04 /* avx.s */,
+				BB08B7852B99638300BE8C21 /* cpuinfo.c */,
+				BB988A1B2BA61CDC0057FC04 /* neon.s */,
 				BB08B7892B99638300BE8C21 /* main.cpp */,
 			);
 			path = matrix3d;
@@ -87,8 +89,8 @@
 		BB08B7912B99638C00BE8C21 /* other */ = {
 			isa = PBXGroup;
 			children = (
+				BB988A182BA61CBE0057FC04 /* avx.s */,
 				BB988A1A2BA61CDC0057FC04 /* avx.asm */,
-				BB988A1B2BA61CDC0057FC04 /* neon.s */,
 				BB08B79D2B99665A00BE8C21 /* README.md */,
 				BB08B79B2B99665A00BE8C21 /* LICENSE.md */,
 				BB08B7C62BA15DB100BE8C21 /* makefile */,
@@ -125,7 +127,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastUpgradeCheck = 1530;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					BB08B7752B99633800BE8C21 = {
 						CreatedOnToolsVersion = 15.3;
@@ -155,9 +157,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BB988A192BA61CBE0057FC04 /* avx.s in Sources */,
-				BB08B78D2B99638300BE8C21 /* cpuinfo.cpp in Sources */,
+				BB08B78D2B99638300BE8C21 /* cpuinfo.c in Sources */,
 				BB08B78F2B99638300BE8C21 /* main.cpp in Sources */,
+				BBE60FD12E13C588004807E1 /* neon.s in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,6 +201,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CLANG_X86_VECTOR_INSTRUCTIONS = "arch=haswell";
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -213,6 +216,7 @@
 					UNROLL,
 					SIMD,
 					FLOAT8,
+					INTRIN,
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -226,6 +230,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 			};
 			name = Debug;
 		};
@@ -264,6 +269,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CLANG_X86_VECTOR_INSTRUCTIONS = "arch=haswell";
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -274,6 +280,7 @@
 					UNROLL,
 					SIMD,
 					FLOAT8,
+					INTRIN,
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -286,6 +293,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 			};
 			name = Release;
 		};
@@ -293,6 +301,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -301,6 +310,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

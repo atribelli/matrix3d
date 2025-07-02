@@ -484,6 +484,27 @@ inline specialized mat_x_mat(mat<float, 4, 4> &dest,
     return intrin;
 }
 
+template <>
+inline specialized mat_x_mat(mat<double, 4, 4> &dest,
+                             mat<double, 4, 4> &a,
+                             mat<double, 4, 4> &b) {
+    uint32x4_t vec0;
+    uint32_t   *pd = (uint32_t *) dest.m[0];
+
+    // Just zero out destination
+    vec0 = vmovq_n_u32 (0);
+           vst1q_u32   (pd,      vec0);
+           vst1q_u32   (pd + 4,  vec0);
+           vst1q_u32   (pd + 8,  vec0);
+           vst1q_u32   (pd + 12, vec0);
+           vst1q_u32   (pd + 16, vec0);
+           vst1q_u32   (pd + 20, vec0);
+           vst1q_u32   (pd + 24, vec0);
+           vst1q_u32   (pd + 28, vec0);
+
+    return zero;
+}
+
 
 
 // -----------------------------------------------------------------------------
@@ -522,6 +543,24 @@ inline specialized vecarr_x_mat(vec <float, 4>    *dest,
     return intrin;
 }
 
+template <>
+inline specialized vecarr_x_mat(vec <double, 4>    *dest,
+                                vec <double, 4>    *v,
+                                mat <double, 4, 4> &m,
+                                size_t             n) {
+    uint32x4_t vec0;
+    uint32_t   *pd = (uint32_t *) dest->v;
+
+    // Just zero out destination
+    vec0 = vmovq_n_u32 (0);
+    for (int i = 0; i < n; ++i, pd += 8) {
+        vst1q_u32   (pd,     vec0);
+        vst1q_u32   (pd + 4, vec0);
+    }
+
+    return zero;
+}
+
 
 
 #endif  // __x86_64__ _M_X64 __aarch64__ __arm__
@@ -532,8 +571,6 @@ inline specialized vecarr_x_mat(vec <float, 4>    *dest,
 #elif defined(ASM) || defined(ASM256)
 
 
-
-#if defined(__x86_64__) || defined(_M_X64)      // 64-bit Intel
 
 template <>
 inline specialized mat_x_mat(mat<float, 4, 4> &dest,
@@ -565,32 +602,9 @@ template <>
 inline specialized vecarr_x_mat(vec <double, 4>    *dest,
                                 vec <double, 4>    *v,
                                 mat <double, 4, 4> &m,
-                                size_t             n) {
-    return vecarr_x_mat_d(dest->v, v->v, m.m[0], n);
-}
-
-#elif defined(__aarch64__) || defined(__arm__)  // 64- or 32-bit ARM
-
-template <>
-inline specialized mat_x_mat(mat<float, 4, 4> &dest,
-                             mat<float, 4, 4> &a,
-                             mat<float, 4, 4> &b) {
-    return mat_x_mat_f(dest.m[0], a.m[0], b.m[0]);
-}
-
-template <>
-inline specialized vecarr_x_mat(vec <float, 4>    *dest,
-                                vec <float, 4>    *v,
-                                mat <float, 4, 4> &m,
                                 size_t            n) {
-#ifdef ASM256
-    return vecarr_x_mat_f2 (dest->v, v->v, m.m[0], n);
-#else
-    return vecarr_x_mat_f  (dest->v, v->v, m.m[0], n);
-#endif
+    return vecarr_x_mat_d (dest->v, v->v, m.m[0], n);
 }
-
-#endif  // __x86_64__ _M_X64 __aarch64__ __arm__
 
 
 
