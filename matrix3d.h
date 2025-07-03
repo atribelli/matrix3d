@@ -20,7 +20,8 @@ const int alignment = 256 / 8;
 // Enumeration identifying specializations
 
 enum specialized {
-    loops,      // Primary C++ implementation using loops
+    loops,      // General C++ implementation using loops
+    loops44,    // 4x4 C++ implementation using loops
     unroll,     // Specialized implmentation with unrolled loops
     intrin,     // Specialized implmentation with SIMD Intrinsics
     intrin256,  //   Pairs of floats in 256-bit registers
@@ -37,6 +38,7 @@ enum specialized {
 inline const char *get_string(specialized spec) {
     switch (spec) {
         case  loops     : return "loops    ";
+        case  loops44   : return "loops44  ";
         case  unroll    : return "unroll   ";
         case  intrin    : return "intrin   ";
         case  intrin256 : return "intrin256";

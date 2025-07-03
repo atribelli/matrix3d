@@ -6,7 +6,7 @@
 //     vecarr_x_mat_f    Matrix and vector 4x4 multiplication
 //     vecarr_x_mat_d
 
-specialized     =           9                       // Must match C enumeration
+specialized     =           10                      // Must match C enumeration
 
                 .text
                 .balign     4

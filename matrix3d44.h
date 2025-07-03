@@ -52,61 +52,90 @@ inline specialized mat_x_mat(mat<T, 4, 4> &dest,
     T *pa = a.m[0];
     T *pb = b.m[0];
 
-    T a0  = (*(pa +  0)),           // Some compilers needed a "hint"
-      a1  = (*(pa +  1)),           // that it was not necessary to
-      a2  = (*(pa +  2)),           // keep indexng into a and b data
-      a3  = (*(pa +  3)),           // on each line
-      b00 = (*(pb +  0)),
-      b01 = (*(pb +  1)),
-      b02 = (*(pb +  2)),
-      b03 = (*(pb +  3)),
-      b10 = (*(pb +  4)),
-      b11 = (*(pb +  5)),
-      b12 = (*(pb +  6)),
-      b13 = (*(pb +  7)),
-      b20 = (*(pb +  8)),
-      b21 = (*(pb +  9)),
-      b22 = (*(pb + 10)),
-      b23 = (*(pb + 11)),
-      b30 = (*(pb + 12)),
-      b31 = (*(pb + 13)),
-      b32 = (*(pb + 14)),
-      b33 = (*(pb + 15));
+    T a0  = pa[ 0],             // Some compilers needed a "hint"
+      a1  = pa[ 1],             // that it was not necessary to
+      a2  = pa[ 2],             // keep indexng into a and b data
+      a3  = pa[ 3],             // on each line
+      b00 = pb[ 0],
+      b01 = pb[ 1],
+      b02 = pb[ 2],
+      b03 = pb[ 3],
+      b10 = pb[ 4],
+      b11 = pb[ 5],
+      b12 = pb[ 6],
+      b13 = pb[ 7],
+      b20 = pb[ 8],
+      b21 = pb[ 9],
+      b22 = pb[10],
+      b23 = pb[11],
+      b30 = pb[12],
+      b31 = pb[13],
+      b32 = pb[14],
+      b33 = pb[15];
     
     // Fully unrolled 4x4 matrix multiply
     
-    (*(pd + 0)) = a0 * b00 + a1 * b10 + a2 * b20 + a3 * b30;
-    (*(pd + 1)) = a0 * b01 + a1 * b11 + a2 * b21 + a3 * b31;
-    (*(pd + 2)) = a0 * b02 + a1 * b12 + a2 * b22 + a3 * b32;
-    (*(pd + 3)) = a0 * b03 + a1 * b13 + a2 * b23 + a3 * b33;
+    pd[0] = a0 * b00 + a1 * b10 + a2 * b20 + a3 * b30;
+    pd[1] = a0 * b01 + a1 * b11 + a2 * b21 + a3 * b31;
+    pd[2] = a0 * b02 + a1 * b12 + a2 * b22 + a3 * b32;
+    pd[3] = a0 * b03 + a1 * b13 + a2 * b23 + a3 * b33;
     
-    a0 = (*(pa + 4));
-    a1 = (*(pa + 5));
-    a2 = (*(pa + 6));
-    a3 = (*(pa + 7));
-    (*(pd + 4)) = a0 * b00 + a1 * b10 + a2 * b20 + a3 * b30;
-    (*(pd + 5)) = a0 * b01 + a1 * b11 + a2 * b21 + a3 * b31;
-    (*(pd + 6)) = a0 * b02 + a1 * b12 + a2 * b22 + a3 * b32;
-    (*(pd + 7)) = a0 * b03 + a1 * b13 + a2 * b23 + a3 * b33;
+    a0 = pa[4];
+    a1 = pa[5];
+    a2 = pa[6];
+    a3 = pa[7];
+    pd[4] = a0 * b00 + a1 * b10 + a2 * b20 + a3 * b30;
+    pd[5] = a0 * b01 + a1 * b11 + a2 * b21 + a3 * b31;
+    pd[6] = a0 * b02 + a1 * b12 + a2 * b22 + a3 * b32;
+    pd[7] = a0 * b03 + a1 * b13 + a2 * b23 + a3 * b33;
     
-    a0 = (*(pa +  8));
-    a1 = (*(pa +  9));
-    a2 = (*(pa + 10));
-    a3 = (*(pa + 11));
-    (*(pd +  8)) = a0 * b00 + a1 * b10 + a2 * b20 + a3 * b30;
-    (*(pd +  9)) = a0 * b01 + a1 * b11 + a2 * b21 + a3 * b31;
-    (*(pd + 10)) = a0 * b02 + a1 * b12 + a2 * b22 + a3 * b32;
-    (*(pd + 11)) = a0 * b03 + a1 * b13 + a2 * b23 + a3 * b33;
+    a0 = pa[ 8];
+    a1 = pa[ 9];
+    a2 = pa[10];
+    a3 = pa[11];
+    pd[ 8] = a0 * b00 + a1 * b10 + a2 * b20 + a3 * b30;
+    pd[ 9] = a0 * b01 + a1 * b11 + a2 * b21 + a3 * b31;
+    pd[10] = a0 * b02 + a1 * b12 + a2 * b22 + a3 * b32;
+    pd[11] = a0 * b03 + a1 * b13 + a2 * b23 + a3 * b33;
     
-    a0 = (*(pa + 12));
-    a1 = (*(pa + 13));
-    a2 = (*(pa + 14));
-    a3 = (*(pa + 15));
-    (*(pd + 12)) = a0 * b00 + a1 * b10 + a2 * b20 + a3 * b30;
-    (*(pd + 13)) = a0 * b01 + a1 * b11 + a2 * b21 + a3 * b31;
-    (*(pd + 14)) = a0 * b02 + a1 * b12 + a2 * b22 + a3 * b32;
-    (*(pd + 15)) = a0 * b03 + a1 * b13 + a2 * b23 + a3 * b33;
-    
+    a0 = pa[12];
+    a1 = pa[13];
+    a2 = pa[14];
+    a3 = pa[15];
+    pd[12] = a0 * b00 + a1 * b10 + a2 * b20 + a3 * b30;
+    pd[13] = a0 * b01 + a1 * b11 + a2 * b21 + a3 * b31;
+    pd[14] = a0 * b02 + a1 * b12 + a2 * b22 + a3 * b32;
+    pd[15] = a0 * b03 + a1 * b13 + a2 * b23 + a3 * b33;
+
+    return unroll;
+}
+
+
+
+// -----------------------------------------------------------------------------
+// Matrix and vector multiplication
+
+template <typename T>
+inline specialized vec_x_mat(vec <T, 4>    &dest,
+                             vec <T, 4>    &v,
+                             mat <T, 4, 4> &m) {
+    dest.v[0] =   v.v[0] * m.m[0][0]
+                + v.v[1] * m.m[1][0]
+                + v.v[2] * m.m[2][0]
+                + v.v[3] * m.m[3][0];
+    dest.v[1] =   v.v[0] * m.m[0][1]
+                + v.v[1] * m.m[1][1]
+                + v.v[2] * m.m[2][1]
+                + v.v[3] * m.m[3][1];
+    dest.v[2] =   v.v[0] * m.m[0][2]
+                + v.v[1] * m.m[1][2]
+                + v.v[2] * m.m[2][2]
+                + v.v[3] * m.m[3][2];
+    dest.v[3] =   v.v[0] * m.m[0][3]
+                + v.v[1] * m.m[1][3]
+                + v.v[2] * m.m[2][3]
+                + v.v[3] * m.m[3][3];
+
     return unroll;
 }
 
@@ -125,38 +154,92 @@ inline specialized vecarr_x_mat(vec <T, 4>    *dest,
     T *pv = v->v;
     T *pm = m.m[0];
 
-    T m00 = (*(pm +  0)),
-      m01 = (*(pm +  1)),
-      m02 = (*(pm +  2)),
-      m03 = (*(pm +  3)),
-      m10 = (*(pm +  4)),
-      m11 = (*(pm +  5)),
-      m12 = (*(pm +  6)),
-      m13 = (*(pm +  7)),
-      m20 = (*(pm +  8)),
-      m21 = (*(pm +  9)),
-      m22 = (*(pm + 10)),
-      m23 = (*(pm + 11)),
-      m30 = (*(pm + 12)),
-      m31 = (*(pm + 13)),
-      m32 = (*(pm + 14)),
-      m33 = (*(pm + 15));
+    T m00 = pm[ 0],
+      m01 = pm[ 1],
+      m02 = pm[ 2],
+      m03 = pm[ 3],
+      m10 = pm[ 4],
+      m11 = pm[ 5],
+      m12 = pm[ 6],
+      m13 = pm[ 7],
+      m20 = pm[ 8],
+      m21 = pm[ 9],
+      m22 = pm[10],
+      m23 = pm[11],
+      m30 = pm[12],
+      m31 = pm[13],
+      m32 = pm[14],
+      m33 = pm[15];
 
     for (int i = 0; i < n; ++i, pd += 4, pv += 4) {
-        T v0 = (*(pv + 0)),
-          v1 = (*(pv + 1)),
-          v2 = (*(pv + 2)),
-          v3 = (*(pv + 3));
+        T v0 = pv[0],
+          v1 = pv[1],
+          v2 = pv[2],
+          v3 = pv[3];
         
         // Fully unrolled vector matrix multiplication
         
-        (*(pd + 0)) = v0 * m00 + v1 * m10 + v2 * m20 + v3 * m30;
-        (*(pd + 1)) = v0 * m01 + v1 * m11 + v2 * m21 + v3 * m31;
-        (*(pd + 2)) = v0 * m02 + v1 * m12 + v2 * m22 + v3 * m32;
-        (*(pd + 3)) = v0 * m03 + v1 * m13 + v2 * m23 + v3 * m33;
+        pd[0] = v0 * m00 + v1 * m10 + v2 * m20 + v3 * m30;
+        pd[1] = v0 * m01 + v1 * m11 + v2 * m21 + v3 * m31;
+        pd[2] = v0 * m02 + v1 * m12 + v2 * m22 + v3 * m32;
+        pd[3] = v0 * m03 + v1 * m13 + v2 * m23 + v3 * m33;
     }
     
     return unroll;
+}
+
+// Use looped 4x4 specializations
+#else
+
+template <typename T>
+inline specialized mat_x_mat(mat<T, 4, 4> &dest,
+                             mat<T, 4, 4> &a,
+                             mat<T, 4, 4> &b) {
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            dest.m[i][j] =   a.m[i][0] * b.m[0][j]
+                           + a.m[i][1] * b.m[1][j]
+                           + a.m[i][2] * b.m[2][j]
+                           + a.m[i][3] * b.m[3][j];
+        }
+    }
+    
+    return loops44;
+}
+
+template <typename T>
+inline specialized vec_x_mat(vec <T, 4>    &dest,
+                             vec <T, 4>    &v,
+                             mat <T, 4, 4> &m) {
+    for (int i = 0; i < 4; ++i) {
+        dest.v[i] =   v.v[0] * m.m[0][i]
+                    + v.v[1] * m.m[1][i]
+                    + v.v[2] * m.m[2][i]
+                    + v.v[3] * m.m[3][i];
+    }
+    
+    return loops44;
+}
+
+template <typename T>
+inline specialized vecarr_x_mat(vec <T, 4>    *dest,
+                                vec <T, 4>    *v,
+                                mat <T, 4, 4> &m,
+                                size_t        n) {
+    T   *pd = dest->v;
+    T   *pv = v->v;
+    int n4  = n * 4;
+    
+    for (int e = 0; e < n4; e += 4) {
+        for (int i = 0; i < 4; ++i) {
+            pd[e + i] =   pv[e + 0] * m.m[0][i]
+                        + pv[e + 1] * m.m[1][i]
+                        + pv[e + 2] * m.m[2][i]
+                        + pv[e + 3] * m.m[3][i];
+        }
+    }
+    
+    return loops44;
 }
 
 #endif  // UNROLL

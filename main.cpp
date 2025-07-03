@@ -707,13 +707,13 @@ int main(void) {
     auto millid = timer.elapsed();
 
     cout.imbue(std::locale(""));
-    cout << "iterations          " << iterations           << endl
-         << "vec array elements  " << elements             << endl
-         << "                 float                double" << endl
-         << "mata x matb " << setw(width) << millif        << " ms "
-                           << get_string(specf)            << " "
-                           << setw(width) << millid        << " ms "
-                           << get_string(specd)            << endl;
+    cout << "iterations          " << iterations            << endl
+         << "vec array elements  " << elements              << endl
+         << "                 float                 double" << endl
+         << "mata x matb " << setw(width) << millif         << " ms "
+                           << get_string(specf)             << " "
+                           << setw(width) << millid         << " ms "
+                           << get_string(specd)             << endl;
 
     specf = other;
     timer.start();
